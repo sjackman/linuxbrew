@@ -3,15 +3,26 @@ sut:
   command: sh -c 'cd ~/.linuxbrew
     && git config user.name LinuxbrewTestBot
     && git config user.email testbot@linuxbrew.sh
+    && git remote -v
     && git remote set-url origin https://github.com/Linuxbrew/linuxbrew.git
     && git fetch origin
     && (test "$GIT_BRANCH" = master || git checkout origin/master)
-    && brew test-bot --verbose
-    && brew test-bot --ci-upload'
+    && brew style hello
+    && brew test-bot
+    && mkdir -m700 ~/.ssh
+    && ssh-keyscan -H github.com > ~/.ssh/known_hosts
+    && echo "$ID_RSA" | base64 -d > ~/.ssh/id_rsa
+    && chmod 400 ~/.ssh/id_rsa
+    && ls -ld ~/.ssh
+    && ls -l ~/.ssh
+    && wc ~/.ssh/id_rsa
+    && sha256sum ~/.ssh/id_rsa
+    && brew test-bot --ci-upload --verbose'
   environment:
     - BINTRAY_USER
     - BINTRAY_KEY
     - GIT_BRANCH
     - GIT_SHA1
     - GIT_TAG
+    - ID_RSA
     - IMAGE_NAME
