@@ -3,10 +3,13 @@ sut:
   command: sh -c 'cd ~/.linuxbrew
     && git config user.name LinuxbrewTestBot
     && git config user.email testbot@linuxbrew.sh
-    && git remote set-url origin https://github.com/Linuxbrew/linuxbrew.git
+    && git remote rename origin testbot
+    && git remote add origin https://github.com/Linuxbrew/linuxbrew.git
+    && git remote -v
     && git fetch origin
     && (test "$GIT_BRANCH" = master || git checkout origin/master)
-    && brew test-bot --verbose
+    && brew style hello
+    && brew test-bot
     && brew test-bot --ci-upload'
   environment:
     - BINTRAY_USER
@@ -14,4 +17,5 @@ sut:
     - GIT_BRANCH
     - GIT_SHA1
     - GIT_TAG
+    - ID_RSA
     - IMAGE_NAME
